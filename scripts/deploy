@@ -1,0 +1,17 @@
+#!/bin/bash
+
+rm -rf dist
+
+# nvm install 4.3
+# nvm use 4.3
+
+npm install --no-optional
+npm run lint
+npm test
+npm prune --production
+
+zip --filesync -x@.zipignore -r app.zip *
+cd scripts
+#terraform remote config --backend=s3 --backend-config="bucket=backup.raybsolomon.com" --backend-config="key=wafflebot/terraform.tfstate" --backend-config="region=us-west-2"
+terraform apply
+cd ..

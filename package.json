@@ -1,0 +1,40 @@
+{
+  "name": "wafflebot",
+  "version": "0.0.0",
+  "description": "A bot",
+  "main": "dist/index.js",
+  "scripts": {
+    "deploy": "scripts/deploy",
+    "tsc": "tsc",
+    "pretest": "tsc",
+    "test": "true",
+    "lint": "tslint src/*.ts"
+  },
+  "author": "Ray Solomon <raybsolomon@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/aws-lambda": "0.0.3",
+    "@types/bluebird": "^3.0.35",
+    "@types/bunyan": "0.0.30",
+    "@types/cheerio": "^0.17.31",
+    "@types/node": "^6.0.45",
+    "@types/node-fetch": "^1.6.5",
+    "@types/request": "0.0.32",
+    "@types/route-recognizer": "0.0.27",
+    "mocha": "^3.1.2",
+    "source-map-support": "^0.4.5",
+    "tslint": "^3.15.1",
+    "typescript": "^2.0.3"
+  },
+  "dependencies": {
+    "bluebird": "^3.4.6",
+    "bunyan": "^1.8.3",
+    "cheerio": "^0.22.0",
+    "node-fetch": "^1.6.3",
+    "request": "^2.75.0",
+    "route-recognizer": "^0.2.7"
+  },
+  "engines": {
+    "node": ">=4"
+  }
+}

@@ -1,0 +1,10 @@
+*.log
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+node_modules
+dist
+settings.js
+settings.json
+settings.ts
+app.zip

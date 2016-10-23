@@ -1,0 +1,24 @@
+{
+  "version": "0.1.0",
+  "command": "npm",
+  "isShellCommand": true,
+  "showOutput": "always",
+  "suppressTaskName": true,
+  "options": {
+    "env": {
+      "NODE_ENV": "development"
+    }
+  },
+  "tasks": [
+    {
+      "taskName": "test",
+      "args": ["test"],
+      "isTestCommand": true
+    },
+    {
+      "taskName": "build",
+      "args": ["run", "tsc"],
+      "isBuildCommand": true
+    }
+  ]
+}

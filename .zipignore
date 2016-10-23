@@ -1,0 +1,6 @@
+/scripts*
+/src*
+example.settings.json
+tsconfig.json
+tslint.json
+*.js.map
