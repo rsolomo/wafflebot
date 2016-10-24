@@ -4,7 +4,13 @@ terraform.tfstate
 terraform.tfstate.backup
 node_modules
 dist
+.vscode/*
 settings.js
 settings.json
 settings.ts
 app.zip
+
+
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
