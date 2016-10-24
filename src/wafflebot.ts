@@ -3,8 +3,7 @@ import qs = require('querystring')
 import { Callback, Context } from 'aws-lambda'
 import {Config} from './config'
 import { HttpRequest, HttpResponse, Body } from './declaration'
-import {CommandResponse} from './command-response'
-import fetch from 'node-fetch'
+import * as subcommand from './subcommand'
 
 process.on('uncaughtException', unhandled)
 process.on('unhandledRejection', unhandled)
@@ -21,10 +20,6 @@ const quotes = [
 ]
 const pancakeRegex = /[Pp]ancake/
 const config = new Config(require('../settings'))
-const HELP = `
-/waffle stock <stock exchange>:<stock>
-/waffle echo <words>
-`
 
 export async function run(event: HttpRequest, context: Context, callback: Callback) {
   try {
@@ -57,30 +52,16 @@ export async function handle(event: HttpRequest, config: Config): Promise<HttpRe
 
   const parts = body.text.split(/\s+/)
   switch (parts[0]) {
-    case 'help': return help(parts)
-    case 'stock': return stock(parts)
-    case 'echo': return echo(parts)
+    case 'help': return subcommand.help(parts)
+    case 'stock': return subcommand.stock(parts)
+    case 'echo': return subcommand.echo(parts)
+    case 'trump': return subcommand.trump(parts)
+    case 'Trump': return subcommand.trump(parts)
+    case 'js': return subcommand.js(body.text.substr(body.text.indexOf(' ') + 1))
     default: return {statusCode: 200}
   }
 }
 
 function random<T>(array: T[]): T {
   return array[Math.floor(Math.random() * array.length)]
-}
-
-function help(args: string[]) {
-  return new CommandResponse(HELP)
-}
-
-async function stock(args: string[]) {
-  const res = await fetch(`http://www.google.com/finance/info?q=${args[1]}`)
-  if (!res.ok) return new CommandResponse(res.statusText)
-  const text = await res.text()
-  const json = JSON.parse(text.replace('//', ''))
-  if (!json.length) return new CommandResponse('no results found')
-  return new CommandResponse(`${json[0].t} price was $${json[0].l} at ${json[0].lt}`)
-}
-
-function echo(args: string[]) {
-  return new CommandResponse(args.slice(1).join(' '))
 }

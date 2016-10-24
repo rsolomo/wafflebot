@@ -44,4 +44,24 @@ describe('_run()', function () {
     assert.equal(typeof body.text, 'string')
     assert.equal(body.text, 'tacos and cheese')
   })
+  it('should trump randomly', async function() {
+    const config = new Config({outgoing_hook_token: '', command_token: ''})
+    const req = createStubHttpRequest(qs.stringify({token: config.command_token, text: 'trump'}))
+    const res = await handle(req, config)
+
+    assert.equal(res.statusCode, 200)
+    const body = JSON.parse(res.body as string)
+    assert.equal(typeof body.text, 'string')
+    assert.ok(!body.text.includes('Ray'))
+  })
+  it('should trump a target', async function() {
+    const config = new Config({outgoing_hook_token: '', command_token: ''})
+    const req = createStubHttpRequest(qs.stringify({token: config.command_token, text: 'trump Ray'}))
+    const res = await handle(req, config)
+
+    assert.equal(res.statusCode, 200)
+    const body = JSON.parse(res.body as string)
+    assert.equal(typeof body.text, 'string')
+    assert.ok(body.text.includes('Ray'))
+  })
 })
