@@ -7,7 +7,7 @@
     "deploy": "scripts/deploy",
     "tsc": "tsc",
     "pretest": "tsc",
-    "test": "mocha --require source-map-support/register dist/test",
+    "test": "mocha --opts src/test/mocha.opts",
     "lint": "tslint src/*.ts"
   },
   "author": "Ray Solomon <raybsolomon@gmail.com>",
@@ -17,12 +17,14 @@
     "@types/bunyan": "0.0.30",
     "@types/mocha": "^2.2.32",
     "@types/node": "^6.0.45",
+    "@types/node-fetch": "^1.6.5",
     "mocha": "^3.1.2",
     "source-map-support": "^0.4.5",
     "typescript": "^2.1.0-dev.20161023"
   },
   "dependencies": {
-    "bunyan": "^1.8.3"
+    "bunyan": "^1.8.3",
+    "node-fetch": "^1.6.3"
   },
   "engines": {
     "node": ">=4"
