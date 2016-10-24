@@ -1,7 +1,7 @@
 import bunyan = require('bunyan')
 import qs = require('querystring')
 import { Callback, Context } from 'aws-lambda'
-import {Config} from './config'
+import {createConfig, Config} from './config'
 import { HttpRequest, HttpResponse, Body } from './declaration'
 import * as subcommand from './subcommand'
 
@@ -19,7 +19,7 @@ const quotes = [
   'They serve pancakes in hell'
 ]
 const pancakeRegex = /[Pp]ancake/
-const config = new Config(require('../settings'))
+const config = createConfig(require('../settings'))
 
 export async function run(event: HttpRequest, context: Context, callback: Callback) {
   try {

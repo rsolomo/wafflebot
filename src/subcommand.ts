@@ -1,7 +1,7 @@
 import qs = require('querystring')
 import fetch from 'node-fetch'
 import {Response} from 'node-fetch'
-import {CommandResponse} from './command-response'
+import {createCommandResponse} from './command-response'
 
 const HELP = `
 /waffle stock <stock exchange>:<stock>
@@ -19,16 +19,16 @@ export function help(args: string[]) {
 
 export async function stock(args: string[]) {
   const res = await fetch(`http://www.google.com/finance/info?q=${args[1]}`)
-  if (!res.ok) return new CommandResponse(res.statusText)
+  if (!res.ok) return createCommandResponse(res.statusText)
   // Google puts '//' in front of the JSON array
   const text = await res.text()
   const json = JSON.parse(text.replace('//', ''))
-  if (!json.length) return new CommandResponse('no results found')
-  return new CommandResponse(`${json[0].t} price was $${json[0].l} at ${json[0].lt}`)
+  if (!json.length) return createCommandResponse('no results found')
+  return createCommandResponse(`${json[0].t} price was $${json[0].l} at ${json[0].lt}`)
 }
 
 export function echo(args: string[]) {
-  return new CommandResponse(args.slice(1).join(' '))
+  return createCommandResponse(args.slice(1).join(' '))
 }
 
 /**
@@ -43,12 +43,12 @@ export async function trump(args: string[]) {
     res = await fetch('https://api.whatdoestrumpthink.com/api/v1/quotes/random')
   }
 
-  if (!res.ok) return new CommandResponse(res.statusText)
+  if (!res.ok) return createCommandResponse(res.statusText)
   const json = await res.json()
-  return new CommandResponse(json.message)
+  return createCommandResponse(json.message)
 }
 
 export function js(code: string) {
   const value = new Function('return ' + code)()
-  return new CommandResponse(value.toString())
+  return createCommandResponse(value.toString())
 }
