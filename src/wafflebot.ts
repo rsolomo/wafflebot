@@ -1,64 +1,57 @@
-import RouteRecognizer = require('route-recognizer')
 import bunyan = require('bunyan')
+import qs = require('querystring')
 import { Callback, Context } from 'aws-lambda'
-import { HttpRequest, HttpResponse, Controller, Method, Scope } from './declaration'
-import {testCtrl} from './controller/test'
-import {undefinedCtrl} from './controller/undefined'
+import {Config} from './config'
+import { HttpRequest, HttpResponse, Body } from './declaration'
 
-export const BASE_URL = 'https://api.groupme.com/v3'
-const log = bunyan.createLogger({
-  name: 'wafflebot'
-})
-const config = require('../settings')
-const promise = Promise.resolve()
+process.on('uncaughtException', unhandled)
+process.on('unhandledRejection', unhandled)
 
-const recognizer = new RouteRecognizer<Map<Method, Controller>>()
-recognizer.add([
-  {
-    path: '/rooms/test',
-    handler: new Map<Method, Controller>([
-      ['POST', testCtrl]
-    ])
-  }
-])
-recognizer.add([
-  {
-    path: '/rooms/undefined',
-    handler: new Map<Method, Controller>([
-      ['POST', undefinedCtrl]
-    ])
-  }
-])
+function unhandled(err: any) {
+  bunyan.createLogger({name: 'wafflebot'}).fatal(err)
+  process.exit(1)
+}
 
-export function run(event: HttpRequest, context: Context, callback: Callback) {
-  log.info({event})
-  promise.then(() => {
-    const routes = recognizer.recognize(event.path)
-    if (!routes || !routes.length) {
-      const notFound: HttpResponse = {statusCode: 404}
-      return notFound
-    }
-    const fn = routes[0].handler.get(event.httpMethod)
-    if (!fn) {
-      const allowed = routes[0].handler.keys()
-      const methodNotAllowed: HttpResponse = {
-        statusCode: 405,
-        headers: { allow: Array.from(allowed).join(', ')}
-      }
-      return methodNotAllowed
-    }
-    return fn({ req: event, context: context , config: config} as Scope)
-  })
-  .then((res) => {
+const log = bunyan.createLogger({name: 'wafflebot'})
+const quotes = [
+  'I hate pancakes',
+  'They serve pancakes in hell'
+]
+const pancakeRegex = /[Pp]ancakes/
+const config = new Config(require('../settings'))
+
+export async function run(event: HttpRequest, context: Context, callback: Callback) {
+  try {
+    const res = await handle(event, config)
     log.info({res})
     callback(undefined, res)
-  })
-  .catch((e) => {
-    log.fatal(e)
-    // handle REST / HTTP errors
+  } catch (err) {
+    log.error({err})
     callback(undefined, {
-      statusCode: e.statusCode || e.status || 500,
-      body: e.body || ''
+      statusCode: err.statusCode || err.status || 500,
+      body: err.body || ''
     })
-  })
+  }
+}
+
+export async function handle(event: HttpRequest, config: Config): Promise<HttpResponse> {
+  log.info({event})
+  if (event.httpMethod !== 'POST') {
+    return {statusCode: 405, headers: { allow: 'POST'}}
+  }
+  const body: Body = qs.parse(event.body)
+  if (body.token !== config.token) {
+    return {statusCode: 403}
+  }
+
+  // Wafflebot's disdain for pancakes comes first
+  if (pancakeRegex.test(body.text)) {
+    return {statusCode: 200, body: JSON.stringify({text: random(quotes)})}
+  }
+
+  return {statusCode: 200}
+}
+
+function random<T>(array: T[]): T {
+  return array[Math.floor(Math.random() * array.length)]
 }

@@ -1,6 +1,5 @@
 import {Context} from 'aws-lambda'
 
-// http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-set-up-simple-proxy.html#api-gateway-simple-proxy-for-lambda-input-format
 export interface HttpRequest {
     httpMethod: Method
     path: string
@@ -16,11 +15,9 @@ export interface HttpResponse {
     body?: string
 }
 
-export interface Scope {
-    req: HttpRequest
-    context: Context
-    config: any
-}
-
 export type Method = 'OPTION' | 'HEAD' | 'GET' | 'POST' | 'PUT' |'PATCH' | 'DELETE'
-export type Controller = (scope: Scope) => Promise<HttpResponse>
+
+export interface Body {
+  text: string
+  token: string
+}

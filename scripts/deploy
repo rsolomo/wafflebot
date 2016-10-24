@@ -6,7 +6,7 @@ rm -rf dist
 # nvm use 4.3
 
 npm install --no-optional
-npm run lint
+#npm run lint
 npm test
 npm prune --production
 

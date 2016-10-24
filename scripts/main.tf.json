@@ -42,7 +42,7 @@
       "app": {
         "rest_api_id": "${aws_api_gateway_rest_api.app.id}",
         "parent_id": "${aws_api_gateway_rest_api.app.root_resource_id}",
-        "path_part": "{rooms+}"
+        "path_part": "{wafflebot+}"
       }
     },
     "aws_api_gateway_method": {
@@ -67,14 +67,14 @@
       "app": {
         "depends_on": ["aws_api_gateway_method.app"],
         "rest_api_id": "${aws_api_gateway_rest_api.app.id}",
-        "stage_name": "prod"
+        "stage_name": "api"
       }
     },
 
     "aws_cloudwatch_log_group": {
       "app": {
         "name": "/aws/lambda/${var.name}",
-        "retention_in_days": 400
+        "retention_in_days": 7
       }
     },
     "aws_iam_role": {
@@ -112,11 +112,10 @@
         "role": "${aws_iam_role.app.arn}",
         "handler": "dist/${var.name}.run",
         "source_code_hash": "${base64sha256(file(\"../app.zip\"))}",
-        "memory_size": 128,
+        "memory_size": 256,
         "runtime": "nodejs4.3",
         "timeout": 10
       }
     }
-
   }
 }
