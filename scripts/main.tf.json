@@ -113,7 +113,7 @@
         "handler": "dist/${var.name}.run",
         "source_code_hash": "${base64sha256(file(\"../app.zip\"))}",
         "memory_size": 128,
-        "runtime": "nodejs4.3",
+        "runtime": "nodejs6.10",
         "timeout": 10
       }
     }
